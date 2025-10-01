@@ -9,11 +9,10 @@ public class ServerApp {
         try (ServerSocket serverSocket = new ServerSocket(5000)) {
             System.out.println("Server is listening on port 5000...");
 
-            while (true) {
-                Socket socket = serverSocket.accept();
-                new Thread(() -> handleClient(socket)).start();
-            }
+            Socket socket = serverSocket.accept();
+            handleClient(socket);
 
+            System.out.println("All messages received. Shutting down server...");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -22,8 +21,17 @@ public class ServerApp {
     private static void handleClient(Socket socket) {
         try (ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
             System.out.println("Client connected!");
-            Message message = (Message) in.readObject();
-            message.display();
+            Message message;
+
+            while (true) {
+                try {
+                    message = (Message) in.readObject();
+                    message.display();
+                } catch (EOFException e) {
+                    System.out.println("Client disconnected.");
+                    break; // Сlient ended the socket
+                }
+            }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         } finally {
@@ -34,4 +42,5 @@ public class ServerApp {
             }
         }
     }
+
 }
