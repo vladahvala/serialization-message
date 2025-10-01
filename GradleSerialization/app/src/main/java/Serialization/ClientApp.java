@@ -20,4 +20,11 @@ public class ClientApp {
             e.printStackTrace();
         }
     }
+
+    // separate method for Junit tests
+    public static void sendMessagesToStream(List<Message> messages, ObjectOutputStream out) throws IOException {
+        for (Message msg : messages) {
+            out.writeObject(msg);
+        }
+    }
 }

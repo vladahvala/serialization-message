@@ -18,7 +18,7 @@ public class ServerApp {
         }
     }
 
-    private static void handleClient(Socket socket) {
+    public static void handleClient(Socket socket) {
         try (ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
             System.out.println("Client connected!");
             Message message;
