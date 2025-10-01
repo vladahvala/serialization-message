@@ -1,18 +1,18 @@
 package Serialization;
 
-import java.io.*;
+import java.io.ObjectOutputStream;
+import java.io.IOException;
+import java.net.Socket;
 
 public class ClientApp {
-    public static void main(String[] args) throws IOException {
-        Message message = new Message("User1", "User2", "Hello, how r u?");
-        message.display();
 
-        FileOutputStream fileOut = new FileOutputStream("MessageInfo.ser");
-        ObjectOutputStream out = new ObjectOutputStream(fileOut);
-        out.writeObject(message);
-        out.close();
-        fileOut.close();
-
-        System.out.println("Object info saved!");
+    public static void sendMessage(Message message) {
+        try (Socket socket = new Socket("localhost", 5000);
+                ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
+            out.writeObject(message);
+            System.out.println("Message sent to server!");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
